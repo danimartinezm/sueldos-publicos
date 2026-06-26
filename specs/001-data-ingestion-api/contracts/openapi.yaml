@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Sueldos Públicos - Salary Data API
+  version: "1.0.0"
+  description: >
+    Read-only API over ingested public-salary records (senior officials). All responses use a
+    single consistent envelope; errors use a uniform shape and never expose internal details.
+servers:
+  - url: http://127.0.0.1:8080/api/v1
+    description: Local deployment
+
+paths:
+  /salaries:
+    get:
+      summary: List salary records (paged, filterable, searchable)
+      operationId: listSalaries
+      parameters:
+        - { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+        - { name: pageSize, in: query, schema: { type: integer, minimum: 1, maximum: 200, default: 50 } }
+        - { name: ministry, in: query, schema: { type: string }, description: Exact ministry filter }
+        - { name: body, in: query, schema: { type: string }, description: Exact body (organismo) filter }
+        - { name: year, in: query, schema: { type: integer }, description: Exact year filter }
+        - { name: q, in: query, schema: { type: string }, description: Case/accent-insensitive position search }
+      responses:
+        "200":
+          description: A page of salary records.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SalaryPage" }
+        "400":
+          description: Invalid paging or filter parameter.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /salaries/{id}:
+    get:
+      summary: Retrieve a single salary record by id
+      operationId: getSalary
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: The matching record.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Salary" }
+        "404":
+          description: No record with that id.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
+
+  /aggregates/by-ministry:
+    get:
+      summary: Count, total, and average remuneration grouped by ministry
+      operationId: aggregateByMinistry
+      parameters:
+        - { name: year, in: query, schema: { type: integer }, description: Optional year filter }
+      responses:
+        "200":
+          description: Aggregate groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/AggregateGroup" }
+
+  /aggregates/by-year:
+    get:
+      summary: Count, total, and average remuneration grouped by year
+      operationId: aggregateByYear
+      responses:
+        "200":
+          description: Aggregate groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/AggregateGroup" }
+
+components:
+  schemas:
+    Salary:
+      type: object
+      required: [id, position, body, ministry, remuneration, year]
+      properties:
+        id: { type: string, format: uuid }
+        position: { type: string, example: "PRESIDENTE DEL GOBIERNO" }
+        body: { type: string, example: "Presidencia del Gobierno" }
+        ministry: { type: string, example: "Presidencia del Gobierno" }
+        remuneration: { type: number, format: double, example: 95943.96, description: Euros }
+        year: { type: integer, example: 2025 }
+
+    SalaryPage:
+      type: object
+      required: [items, page, pageSize, total]
+      properties:
+        items: { type: array, items: { $ref: "#/components/schemas/Salary" } }
+        page: { type: integer, example: 1 }
+        pageSize: { type: integer, example: 50 }
+        total: { type: integer, example: 320 }
+
+    AggregateGroup:
+      type: object
+      required: [key, count, total, average]
+      properties:
+        key: { type: string, example: "Presidencia del Gobierno" }
+        count: { type: integer, example: 24 }
+        total: { type: number, format: double, example: 2890000.00 }
+        average: { type: number, format: double, example: 120416.67 }
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, example: "invalid_parameter" }
+            message: { type: string, example: "pageSize must be between 1 and 200." }
