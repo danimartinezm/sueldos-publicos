@@ -7,6 +7,9 @@ this is a validation/run guide.
 ## Prerequisites
 
 - **Swift 6.3+** — `swift --version` (already present: 6.3.2).
+- **Xcode toolchain for tests** — XCTest/XCTVapor require a full Xcode. If `xcode-select -p` points
+  at CommandLineTools, prefix build/test/run commands with
+  `DEVELOPER_DIR=/Applications/Xcode-26.5.0.app/Contents/Developer` (adjust the path to your Xcode).
 - **PostgreSQL 14+** — not yet installed. Install and start (Homebrew, primary path):
   ```bash
   brew install postgresql@16
@@ -19,8 +22,10 @@ this is a validation/run guide.
 
 ```bash
 createdb sueldos_publicos
-# unaccent extension is enabled by a migration (CREATE EXTENSION IF NOT EXISTS unaccent)
 ```
+
+Accent/case-insensitive search needs no PostgreSQL extension — values are normalized in Swift at
+ingest time and stored in `position_normalized`.
 
 Configure connection via environment (local defaults shown):
 
@@ -46,7 +51,7 @@ Expected: a clean build under Swift 6 strict concurrency (no concurrency warning
 swift run App migrate --yes
 ```
 
-Expected: `salary_records` and `ingestion_runs` tables created; `unaccent` extension enabled.
+Expected: `salary_records` and `ingestion_runs` tables created.
 
 ## Ingest the dataset (admin action)
 
@@ -58,8 +63,10 @@ Expected summary (per FR-004 / SC-001):
 ```
 Rows read: 320  Imported: 320  Rejected: 0
 ```
-Re-running the same command must report **0 duplicates created** (idempotency, SC-003) — the second
-run imports/updates the same 320 rows without growing the table.
+The file holds **320 rows but 304 distinct natural keys** — 16 rows are exact duplicates (same
+position/body/ministry/year and remuneration), so the table holds **304 records**. Re-running the
+command keeps the count at 304 (idempotency, SC-003) — the same rows are upserted without growing
+the table.
 
 ## Deploy locally
 
@@ -97,7 +104,7 @@ curl -s "http://127.0.0.1:8080/api/v1/salaries?pageSize=9999"
 ```
 
 Expected outcomes:
-- List returns `{ items, page, pageSize, total: 320 }`.
+- List returns `{ items, page, pageSize, total: 304 }`.
 - Get-by-id returns the matching record; unknown id returns `404` with `{ error: { code, message } }`.
 - Filters/search return only matching records; `q=director` matches accented/case variants.
 - Aggregates return `{ key, count, total, average }` per group, matching manual calculation (SC-005).
@@ -116,6 +123,6 @@ idempotency/atomicity, and the API contract — all authored before their implem
 ## Done / acceptance
 
 - Build is clean under strict concurrency; migrations applied.
-- Full file ingests to 320 records; re-ingest creates 0 duplicates.
+- Full file ingests (320 rows read) to 304 distinct records; re-ingest creates 0 duplicates.
 - All API endpoints behave per the curl checks above and `contracts/openapi.yaml`.
 - `swift test` passes.

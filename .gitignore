@@ -1,0 +1,16 @@
+# Swift / SwiftPM
+.build/
+.swiftpm/
+DerivedData/
+Packages/
+*.xcodeproj
+
+# Local environment
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
