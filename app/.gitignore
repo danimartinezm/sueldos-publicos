@@ -9,6 +9,7 @@ captures/
 .idea/
 
 # Kotlin Native / Xcode (iOS)
-*.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
+# The Xcode project is generated from iosApp/project.yml via XcodeGen (source of truth).
+*.xcodeproj/
+*.xcworkspace/
 DerivedData/

@@ -1,0 +1,42 @@
+name: iosApp
+options:
+  bundleIdPrefix: info.danielmartinez
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+targets:
+  iosApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+        excludes:
+          - "Info.plist"
+    settings:
+      base:
+        PRODUCT_NAME: iosApp
+        PRODUCT_BUNDLE_IDENTIFIER: info.danielmartinez.sueldos
+        GENERATE_INFOPLIST_FILE: "NO"
+        INFOPLIST_FILE: iosApp/Info.plist
+        SWIFT_VERSION: "5.0"
+        # The shared Kotlin framework is built by Gradle and placed here.
+        FRAMEWORK_SEARCH_PATHS:
+          - $(inherited)
+          - $(SRCROOT)/../composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS:
+          - $(inherited)
+          - -framework
+          - ComposeApp
+        # Simulator runs need no signing.
+        CODE_SIGNING_ALLOWED: "NO"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_IDENTITY: ""
+    preBuildScripts:
+      - name: "Build Compose (Kotlin) framework"
+        basedOnDependencyAnalysis: false
+        script: |
+          set -e
+          cd "$SRCROOT/.."
+          export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+          ./gradlew :composeApp:embedAndSignAppleFrameworkForXcode
