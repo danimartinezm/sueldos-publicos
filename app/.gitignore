@@ -1,0 +1,14 @@
+# Gradle / Kotlin / Android
+.gradle/
+build/
+**/build/
+local.properties
+.kotlin/
+captures/
+*.iml
+.idea/
+
+# Kotlin Native / Xcode (iOS)
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/

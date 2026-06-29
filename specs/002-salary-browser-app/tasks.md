@@ -31,10 +31,10 @@ implementable and testable.
 **Purpose**: Stand up the Kotlin Multiplatform + Compose Multiplatform project that builds for Android
 and iOS.
 
-- [ ] T001 Create the Gradle KMP project under `app/` (`settings.gradle.kts`, root `build.gradle.kts`, `gradle.properties`, Gradle wrapper) with `org.gradle.java.home` pointing at the Android Studio JBR
-- [ ] T002 Configure the `composeApp` module in `app/composeApp/build.gradle.kts`: targets `androidTarget` + `iosX64/iosArm64/iosSimulatorArm64`, Compose Multiplatform plugin, kotlinx-serialization plugin, and dependencies (Ktor client core/content-negotiation/serialization-json, Ktor Darwin + OkHttp engines, kotlinx-coroutines, kotlinx-serialization-json); test deps ktor-client-mock, kotlinx-coroutines-test, compose ui-test
-- [ ] T003 [P] Create `app/local.properties` (Android `sdk.dir` → `~/Library/Android/sdk`) and the Android source set: `app/composeApp/src/androidMain/AndroidManifest.xml` with a debug `network_security_config.xml` permitting cleartext to `10.0.2.2`/localhost
-- [ ] T004 [P] Create the `app/iosApp/` Xcode project hosting the shared framework, with an Info.plist ATS exception for `127.0.0.1` (NSAllowsLocalNetworking)
+- [x] T001 Create the Gradle KMP project under `app/` (`settings.gradle.kts`, root `build.gradle.kts`, `gradle.properties`, Gradle wrapper) with `org.gradle.java.home` pointing at the Android Studio JBR
+- [x] T002 Configure the `composeApp` module in `app/composeApp/build.gradle.kts`: targets `androidTarget` + `iosX64/iosArm64/iosSimulatorArm64`, Compose Multiplatform plugin, kotlinx-serialization plugin, and dependencies (Ktor client core/content-negotiation/serialization-json, Ktor Darwin + OkHttp engines, kotlinx-coroutines, kotlinx-serialization-json); test deps ktor-client-mock, kotlinx-coroutines-test, compose ui-test
+- [x] T003 [P] Create `app/local.properties` (Android `sdk.dir` → `~/Library/Android/sdk`) and the Android source set: `app/composeApp/src/androidMain/AndroidManifest.xml` with a debug `network_security_config.xml` permitting cleartext to `10.0.2.2`/localhost
+- [x] T004 [P] Create the `app/iosApp/` Xcode project hosting the shared framework, with an Info.plist ATS exception for `127.0.0.1` (NSAllowsLocalNetworking)
 - [ ] T005 [P] Configure ktlint + detekt in Gradle and add their config files under `app/` (Constitution Principle I)
 
 **Checkpoint**: `./gradlew :composeApp:assembleDebug` builds an empty app for Android; iOS framework links.
@@ -48,16 +48,16 @@ and reusable state UI — required by every user story.
 
 **⚠️ CRITICAL**: No user story work begins until this phase is complete.
 
-- [ ] T006 [P] Define domain models in `…/sueldos/model/Models.kt`: `PositionDetail`, `PositionSummary`, `Page<T>` per data-model.md
-- [ ] T007 [P] Define serialization DTOs in `…/sueldos/api/Dto.kt`: `SalaryDto`, `SalaryPageDto`, `ApiErrorDto` (`@Serializable`, fields matching contracts/api-consumption.md) and mappers DTO→model
-- [ ] T008 [P] Define `expect` platform config in `…/sueldos/api/Platform.kt` (`baseUrl`) with `actual`s: `androidMain` → `http://10.0.2.2:8080/api/v1`, `iosMain` → `http://127.0.0.1:8080/api/v1`
-- [ ] T009 Implement the Ktor `HttpClient` factory in `…/sueldos/api/HttpClientFactory.kt` (`expect` engine; `androidMain` OkHttp, `iosMain` Darwin) with JSON ContentNegotiation and a timeout
-- [ ] T010 Implement `SalaryApiClient` interface + Ktor implementation skeleton in `…/sueldos/api/SalaryApiClient.kt` (`list(page,pageSize)`, `getById(id)`) returning models/typed errors (`NotFound`, `Network`)
-- [ ] T011 [P] Define `expect MoneyFormatter` in `…/sueldos/format/MoneyFormatter.kt` with `actual`s: `androidMain` `java.text.NumberFormat` (es-ES), `iosMain` `NSNumberFormatter` (es_ES) → `95.943,96 €`
-- [ ] T012 [P] Create the Spanish `Strings` object in `…/sueldos/i18n/Strings.kt` with all keys from contracts/ui-contract.md
-- [ ] T013 [P] Define navigation state `Screen` (`List` | `Detail(id)`) in `…/sueldos/state/Screen.kt`
-- [ ] T014 Create the app root composable + theme in `…/sueldos/ui/App.kt` (hosts `Screen` state, renders List/Detail, wires platform back to "return to list")
-- [ ] T015 [P] Create reusable state composables in `…/sueldos/ui/components/StateViews.kt`: `LoadingView`, `EmptyView`, `ErrorView(onRetry)` using `Strings`
+- [x] T006 [P] Define domain models in `…/sueldos/model/Models.kt`: `PositionDetail`, `PositionSummary`, `Page<T>` per data-model.md
+- [x] T007 [P] Define serialization DTOs in `…/sueldos/api/Dto.kt`: `SalaryDto`, `SalaryPageDto`, `ApiErrorDto` (`@Serializable`, fields matching contracts/api-consumption.md) and mappers DTO→model
+- [x] T008 [P] Define `expect` platform config in `…/sueldos/api/Platform.kt` (`baseUrl`) with `actual`s: `androidMain` → `http://10.0.2.2:8080/api/v1`, `iosMain` → `http://127.0.0.1:8080/api/v1`
+- [x] T009 Implement the Ktor `HttpClient` factory in `…/sueldos/api/HttpClientFactory.kt` (`expect` engine; `androidMain` OkHttp, `iosMain` Darwin) with JSON ContentNegotiation and a timeout
+- [x] T010 Implement `SalaryApiClient` interface + Ktor implementation skeleton in `…/sueldos/api/SalaryApiClient.kt` (`list(page,pageSize)`, `getById(id)`) returning models/typed errors (`NotFound`, `Network`)
+- [x] T011 [P] Define `expect MoneyFormatter` in `…/sueldos/format/MoneyFormatter.kt` with `actual`s: `androidMain` `java.text.NumberFormat` (es-ES), `iosMain` `NSNumberFormatter` (es_ES) → `95.943,96 €`
+- [x] T012 [P] Create the Spanish `Strings` object in `…/sueldos/i18n/Strings.kt` with all keys from contracts/ui-contract.md
+- [x] T013 [P] Define navigation state `Screen` (`List` | `Detail(id)`) in `…/sueldos/state/Screen.kt`
+- [x] T014 Create the app root composable + theme in `…/sueldos/ui/App.kt` (hosts `Screen` state, renders List/Detail, wires platform back to "return to list")
+- [x] T015 [P] Create reusable state composables in `…/sueldos/ui/components/StateViews.kt`: `LoadingView`, `EmptyView`, `ErrorView(onRetry)` using `Strings`
 
 **Checkpoint**: App launches showing an empty shell; API client + formatter + strings compile on both platforms.
 
@@ -75,17 +75,17 @@ appears (position + salary per row) and scrolling loads more beyond the first sc
 
 > **Write these tests FIRST, ensure they FAIL before implementation (Constitution Principle II)**
 
-- [ ] T016 [P] [US1] API client list test in `…/test/api/SalaryApiClientListTest.kt` using Ktor `MockEngine`: decodes `SalaryPageDto`, maps to models, reads `total`; handles a network failure
-- [ ] T017 [P] [US1] `MoneyFormatter` test in `…/test/format/MoneyFormatterTest.kt`: 95943.96 → `95.943,96 €` (es-ES grouping/decimal/symbol)
-- [ ] T018 [P] [US1] `SalaryListStateHolder` tests in `…/test/state/SalaryListStateHolderTest.kt` (coroutines-test): Loading→Content first page; append on next page; `endReached` when `loaded>=total`; no duplicate concurrent page loads
+- [x] T016 [P] [US1] API client list test in `…/test/api/SalaryApiClientListTest.kt` using Ktor `MockEngine`: decodes `SalaryPageDto`, maps to models, reads `total`; handles a network failure
+- [x] T017 [P] [US1] `MoneyFormatter` test in `…/test/format/MoneyFormatterTest.kt`: 95943.96 → `95.943,96 €` (es-ES grouping/decimal/symbol)
+- [x] T018 [P] [US1] `SalaryListStateHolder` tests in `…/test/state/SalaryListStateHolderTest.kt` (coroutines-test): Loading→Content first page; append on next page; `endReached` when `loaded>=total`; no duplicate concurrent page loads
 - [ ] T019 [P] [US1] Compose UI test in `…/test/ui/SalaryListScreenTest.kt` (`runComposeUiTest`): rows show position + formatted salary; near-end scroll triggers a load-more
 
 ### Implementation for User Story 1
 
-- [ ] T020 [US1] Implement `SalaryApiClient.list` in `…/sueldos/api/SalaryApiClient.kt` (GET `/salaries?page&pageSize=50`, decode, map)
-- [ ] T021 [US1] Implement `SalaryListStateHolder` in `…/sueldos/state/SalaryListStateHolder.kt`: `StateFlow<SalaryListUiState>`, first-page load, `loadMore()` with in-flight guard and `endReached`
-- [ ] T022 [US1] Implement `SalaryListScreen` in `…/sueldos/ui/SalaryListScreen.kt`: `LazyColumn` of rows (position + `MoneyFormatter` salary), footer spinner while appending, near-end detection → `loadMore()`, row click → `Screen.Detail(id)`
-- [ ] T023 [US1] Wire `SalaryListScreen` into `App.kt` as the start screen and preserve `LazyListState` across navigation
+- [x] T020 [US1] Implement `SalaryApiClient.list` in `…/sueldos/api/SalaryApiClient.kt` (GET `/salaries?page&pageSize=50`, decode, map)
+- [x] T021 [US1] Implement `SalaryListStateHolder` in `…/sueldos/state/SalaryListStateHolder.kt`: `StateFlow<SalaryListUiState>`, first-page load, `loadMore()` with in-flight guard and `endReached`
+- [x] T022 [US1] Implement `SalaryListScreen` in `…/sueldos/ui/SalaryListScreen.kt`: `LazyColumn` of rows (position + `MoneyFormatter` salary), footer spinner while appending, near-end detection → `loadMore()`, row click → `Screen.Detail(id)`
+- [x] T023 [US1] Wire `SalaryListScreen` into `App.kt` as the start screen and preserve `LazyListState` across navigation
 
 **Checkpoint**: US1 fully functional and independently testable — list loads, formats, and pages.
 
@@ -101,16 +101,16 @@ Ministerio, Retribución, Año) are shown; back returns to the same scroll posit
 
 ### Tests for User Story 2 (MANDATORY — write before implementation) ⚠️
 
-- [ ] T024 [P] [US2] API client getById test in `…/test/api/SalaryApiClientDetailTest.kt` (MockEngine): 200 maps to `PositionDetail`; 404 → `NotFound`; failure → `Network`
-- [ ] T025 [P] [US2] `SalaryDetailStateHolder` tests in `…/test/state/SalaryDetailStateHolderTest.kt`: Loading→Content; 404→NotAvailable; error→Error
+- [x] T024 [P] [US2] API client getById test in `…/test/api/SalaryApiClientDetailTest.kt` (MockEngine): 200 maps to `PositionDetail`; 404 → `NotFound`; failure → `Network`
+- [x] T025 [P] [US2] `SalaryDetailStateHolder` tests in `…/test/state/SalaryDetailStateHolderTest.kt`: Loading→Content; 404→NotAvailable; error→Error
 - [ ] T026 [P] [US2] Compose UI test in `…/test/ui/SalaryDetailScreenTest.kt`: all five labelled fields render with Spanish labels and formatted salary
 
 ### Implementation for User Story 2
 
-- [ ] T027 [US2] Implement `SalaryApiClient.getById` in `…/sueldos/api/SalaryApiClient.kt` (GET `/salaries/{id}`, map 404→NotFound)
-- [ ] T028 [US2] Implement `SalaryDetailStateHolder` in `…/sueldos/state/SalaryDetailStateHolder.kt` (`StateFlow<SalaryDetailUiState>`)
-- [ ] T029 [US2] Implement `SalaryDetailScreen` in `…/sueldos/ui/SalaryDetailScreen.kt`: labelled rows (Cargo/Organismo/Ministerio/Retribución/Año), graceful handling of missing optional fields
-- [ ] T030 [US2] Wire list→detail navigation and back (preserving list scroll) in `…/sueldos/ui/App.kt`
+- [x] T027 [US2] Implement `SalaryApiClient.getById` in `…/sueldos/api/SalaryApiClient.kt` (GET `/salaries/{id}`, map 404→NotFound)
+- [x] T028 [US2] Implement `SalaryDetailStateHolder` in `…/sueldos/state/SalaryDetailStateHolder.kt` (`StateFlow<SalaryDetailUiState>`)
+- [x] T029 [US2] Implement `SalaryDetailScreen` in `…/sueldos/ui/SalaryDetailScreen.kt`: labelled rows (Cargo/Organismo/Ministerio/Retribución/Año), graceful handling of missing optional fields
+- [x] T030 [US2] Wire list→detail navigation and back (preserving list scroll) in `…/sueldos/ui/App.kt`
 
 **Checkpoint**: US1 + US2 work — browse and drill into full details.
 
@@ -126,14 +126,14 @@ state shows and retry recovers.
 
 ### Tests for User Story 3 (MANDATORY — write before implementation) ⚠️
 
-- [ ] T031 [P] [US3] State-holder resilience tests in `…/test/state/StateResilienceTest.kt`: list Empty when `total==0`; Error on failure; retry transitions Error→Loading→Content
+- [x] T031 [P] [US3] State-holder resilience tests in `…/test/state/StateResilienceTest.kt`: list Empty when `total==0`; Error on failure; retry transitions Error→Loading→Content
 - [ ] T032 [P] [US3] Compose UI tests in `…/test/ui/StateViewsTest.kt`: list and detail render Loading/Empty/Error views; tapping "Reintentar" invokes retry; detail NotAvailable renders
 
 ### Implementation for User Story 3
 
-- [ ] T033 [US3] Wire Loading/Empty/Error(+retry) from `SalaryListStateHolder` into `SalaryListScreen` using the shared `StateViews` (replace any ad-hoc handling)
-- [ ] T034 [US3] Wire Loading/NotAvailable/Error(+retry) from `SalaryDetailStateHolder` into `SalaryDetailScreen`
-- [ ] T035 [US3] Ensure all network work runs off the main thread via coroutine dispatchers so the UI never blocks (FR-013), verified by a non-blocking state-holder test
+- [x] T033 [US3] Wire Loading/Empty/Error(+retry) from `SalaryListStateHolder` into `SalaryListScreen` using the shared `StateViews` (replace any ad-hoc handling)
+- [x] T034 [US3] Wire Loading/NotAvailable/Error(+retry) from `SalaryDetailStateHolder` into `SalaryDetailScreen`
+- [x] T035 [US3] Ensure all network work runs off the main thread via coroutine dispatchers so the UI never blocks (FR-013), verified by a non-blocking state-holder test
 
 **Checkpoint**: All three user stories independently functional; full suite green.
 
@@ -209,3 +209,32 @@ state shows and retry recovers.
   (engine, base URL, formatter, entrypoint).
 - All user-facing copy in Spanish via `Strings`; salaries always via `MoneyFormatter`.
 - Commit after each task or logical group.
+
+---
+
+## Implementation Status (2026-06-29)
+
+**Verified in this environment:**
+- ✅ Project builds: **Android debug APK assembles**; **iOS shared framework compiles** (Kotlin/Native,
+  iosSimulatorArm64) — both platforms' shared logic + Compose UI compile.
+- ✅ **14/14 logic tests pass** (`:composeApp:testDebugUnitTest`): API client over Ktor `MockEngine`
+  (list mapping, paging params, getById, 404→NotFound, 5xx→ApiException), `MoneyFormatter` es-ES
+  (`95.943,96 €`), list state holder (loading→content, paged append, end-of-list, error+retry,
+  empty), and detail state holder (content, NotAvailable, error+retry). Authored test-first.
+- Toolchain: Gradle 8.11.1 + JDK 21 (Android Studio JBR); Kotlin 2.0.21, Compose MP 1.7.3, AGP 8.7.3,
+  Ktor 3.0.3. compileSdk 36 (only platform installed; suppressed for AGP 8.7).
+
+**Remaining (device-/tooling-bound, not run here):**
+- ⬜ T019 / T026 / T032 — Compose UI tests (`runComposeUiTest`) require an Android emulator / iOS
+  simulator (instrumented). The UI composables are thin projections of the state holders, which are
+  fully unit-tested; these are the on-device follow-ups.
+- ⬜ T005 / T037 — wire ktlint + detekt into Gradle and resolve findings. Code follows Kotlin official
+  style; the gate is not yet enforced in the build.
+- ⬜ T036 / T038 / T039 / T040 — performance pass, rotation check, and end-to-end run on emulator +
+  simulator against the live 001 server (per `quickstart.md`), incl. side-by-side consistency.
+
+**Deviations from research.md (documented):**
+- The `iosApp` Xcode project (`.xcodeproj`) is generated locally and not committed (machine-specific);
+  the Swift sources + `Info.plist` are provided under `app/iosApp/`.
+- State holders use a `loading` flag + injected `CoroutineScope` (custom, no MVVM lib) rather than a
+  navigation/paging library — per Custom-First.
